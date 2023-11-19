@@ -8,7 +8,7 @@ setup(
     package_dir={'': 'src'},
     entry_points={
         'console_scripts': [
-            'shelvescontroller=app.py:run',
+            'shelvescontroller=app:run',
         ],
     },
     install_requires=[

@@ -1,0 +1,6 @@
+{
+    "apiUrl": "https://smart-inventory-system.azurewebsites.net",
+    "azureIoTHub": {
+        "hostName": "smart-inventory-system.azure-devices.net"
+    }
+}

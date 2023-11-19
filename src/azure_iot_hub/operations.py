@@ -3,6 +3,7 @@ from azure.iot.device import MethodResponse
 from iot_method_name import IoTMethodName
 from shelves import turn_on_light, turn_off_light
 from shelves import SHELVES
+from config import config
 
 async def setup_client():
     """Set up the Azure IoT Hub client to handle direct method calls"""
@@ -14,7 +15,8 @@ async def setup_client():
 def init_client():
     """Initialize the Azure IoT Hub client"""
 
-    conn_str = "HostName=smart-inventory-system.azure-devices.net;DeviceId=7948ae2e-4161-4fbc-9380-3eb7fa0751c5;SharedAccessKey=/vQPktdneAdDhyBU0oShvlhhfpyOSLOMWAIoTLYX35Y="
+    
+    conn_str = f"HostName={config['azureIoTHub']['hostName']};DeviceId={config['deviceId']};SharedAccessKey={config['accessKey']}"
     client = IoTHubDeviceClient.create_from_connection_string(conn_str)
     return client
 

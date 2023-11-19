@@ -2,6 +2,7 @@ import asyncio
 import RPi.GPIO as GPIO
 import requests
 from shelves_config import SHELVES
+from config import config
 
 def setup_shelves():
     GPIO.setmode(GPIO.BCM)
@@ -31,7 +32,7 @@ async def monitor_laser_motion_sensor(shelf):
                 print("Motion detected!")
             else:
                 print("Motion stopped!")
-                url = f"https://smart-inventory-system.azurewebsites.net/shelf-controllers/7948ae2e-4161-4fbc-9380-3eb7fa0751c5/shelf/{shelf.position}/movements"  # Replace with the actual URL
+                url = f"{config['apiUrl']}/shelf-controllers/{config['deviceId']}/shelf/{shelf.position}/movements"
                 response = requests.post(url)
                 print(response.status_code)
                 
