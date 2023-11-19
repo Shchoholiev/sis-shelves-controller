@@ -1,9 +1,9 @@
 from azure.iot.device.aio import IoTHubDeviceClient
 from azure.iot.device import MethodResponse
-from iot_method_name import IoTMethodName
+from .iot_method_name import IoTMethodName
 from shelves import control_light, SHELVES
-from config import config
-from logger import logger
+from app.config import config
+from app.logger import logger
 
 async def setup_client():
     """

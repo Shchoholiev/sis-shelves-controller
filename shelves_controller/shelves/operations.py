@@ -1,10 +1,10 @@
 import asyncio
-from shelve import Shelf
+from .shelf import Shelf
 import RPi.GPIO as GPIO
 import requests
-from shelves_config import SHELVES
-from config import config
-from logger import logger
+from .shelves_config import SHELVES
+from app.config import config
+from app.logger import logger
 
 def setup_shelves():
     """

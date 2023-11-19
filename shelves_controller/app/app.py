@@ -1,11 +1,11 @@
 import asyncio
-from shelves import SHELVES, setup_laser_motion_sensor, shelves_cleanup, monitor_laser_motion_sensor
+from shelves import SHELVES, setup_shelves, shelves_cleanup, monitor_laser_motion_sensor
 from azure_iot_hub import azure_iot_cleanup, setup_client
-from logger import logger
+from .logger import logger
 
 async def main():
     await setup_client()
-    setup_laser_motion_sensor()
+    setup_shelves()
 
     motion_sensors_tasks = [monitor_laser_motion_sensor(shelf) for shelf in SHELVES]
 

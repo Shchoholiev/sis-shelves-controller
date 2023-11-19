@@ -2,13 +2,16 @@ from setuptools import setup, find_packages
 
 setup(
     name="shelves_controller",
-    version="0.1.0",
+    version="1.0.0",
     author='Serhii Shchoholiev',
-    packages=find_packages(where="src"),
-    package_dir={'': 'src'},
+    packages=find_packages(where="shelves_controller"),
+    package_dir={'': 'shelves_controller'},
+    package_data={
+        'app': ['appconfig.json', 'deviceconfig.json'],
+    },
     entry_points={
         'console_scripts': [
-            'shelvescontroller=app:run',
+            'shelvescontroller=app.app:run',
         ],
     },
     install_requires=[

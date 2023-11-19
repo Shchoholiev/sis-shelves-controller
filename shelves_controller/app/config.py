@@ -1,4 +1,5 @@
 import json
+import os
 
 def read_json_file(file_path):
     try:
@@ -14,8 +15,13 @@ def read_json_file(file_path):
 def load_config():
     """Load configuration from appconfig.json and deviceconfig.json"""
 
-    app_config = read_json_file('appconfig.json')
-    device_config = read_json_file('deviceconfig.json')
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+
+    appconfig_file_path = os.path.join(current_directory, 'appconfig.json')
+    app_config = read_json_file(appconfig_file_path)
+
+    deviceconfig_file_path = os.path.join(current_directory, 'deviceconfig.json')
+    device_config = read_json_file(deviceconfig_file_path)
 
     return {**app_config, **device_config}
 
