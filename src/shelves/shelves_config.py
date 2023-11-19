@@ -1,4 +1,4 @@
-from src.models.shelf import Shelf
+from shelf import Shelf
 
 SHELVES = [
     Shelf(
