@@ -4,6 +4,7 @@ from azure.iot.device import MethodResponse
 from src.enums.iot_method_name import IoTMethodName
 from src.configs.shelves_config import SHELVES
 import RPi.GPIO as GPIO
+import requests
 
 async def init_client():
     conn_str = "HostName=smart-inventory-system.azure-devices.net;DeviceId=7948ae2e-4161-4fbc-9380-3eb7fa0751c5;SharedAccessKey=/vQPktdneAdDhyBU0oShvlhhfpyOSLOMWAIoTLYX35Y="
@@ -58,6 +59,9 @@ async def monitor_laser_motion_sensor(shelf):
                 # Add your motion handling logic here
             else:
                 print("Motion stopped!")
+                url = f"https://smart-inventory-system.azurewebsites.net/shelf-controllers/7948ae2e-4161-4fbc-9380-3eb7fa0751c5/shelf/{shelf.position}/movements"  # Replace with the actual URL
+                response = requests.post(url)
+                print(response.status_code)
                 
         await asyncio.sleep(0.2)  # Sleep for a short period to prevent blocking
 
