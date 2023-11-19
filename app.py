@@ -41,19 +41,49 @@ async def direct_method_handler(method_request):
     )
     await client.send_method_response(method_response)
 
+async def setup_laser_motion_sensors():
+    for shelf in SHELVES:
+        GPIO.setup(shelf.laser_beam_pin, GPIO.OUT)
+        GPIO.output(shelf.laser_beam_pin, GPIO.HIGH)
+        GPIO.setup(shelf.laser_sensor_pin, GPIO.IN)
+
+async def monitor_laser_motion_sensor(shelf):
+    current_state = GPIO.input(shelf.laser_sensor_pin)
+
+    while True:
+        if GPIO.input(shelf.laser_sensor_pin) != current_state:
+            current_state = GPIO.input(shelf.laser_sensor_pin)
+            if current_state == 1:
+                print("Motion detected!")
+                # Add your motion handling logic here
+            else:
+                print("Motion stopped!")
+                
+        await asyncio.sleep(0.2)  # Sleep for a short period to prevent blocking
+
 
 async def main():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
+    
+    await setup_laser_motion_sensors()
 
     global client 
     client = await init_client()
     client.on_method_request_received = direct_method_handler
 
+    motion_sensors_tasks = [monitor_laser_motion_sensor(shelf) for shelf in SHELVES]
+
     stop_event = asyncio.Event()
 
     try:
-        await stop_event.wait()  # This will wait indefinitely until stop_event is set
+        await asyncio.gather(
+            *motion_sensors_tasks,
+            stop_event.wait()  # Waiting for stop event
+        )
+    except KeyboardInterrupt as k:
+        print("User requested stop.")
+        print("Application stopping...")
     except:
         print("Application stopping...")
     finally:
