@@ -1,6 +1,7 @@
 import asyncio
 from shelves import SHELVES, setup_laser_motion_sensor, shelves_cleanup, monitor_laser_motion_sensor
 from azure_iot_hub import azure_iot_cleanup, setup_client
+from logger import logger
 
 async def main():
     await setup_client()
@@ -16,14 +17,14 @@ async def main():
             stop_event.wait()  # Waiting for stop event
         )
     except:
-        print("Application stopping...")
+        logger.info("Application stopping...")
     finally:
         await azure_iot_cleanup()
         shelves_cleanup()
-        print("Application stopped.")
+        logger.info("Application stopped.")
 
 def run():
-    print("Starting shelves controller...")
+    logger.info("Starting shelves controller...")
     asyncio.run(main())
 
 if __name__ == "__main__":

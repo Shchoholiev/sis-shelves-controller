@@ -1,46 +1,56 @@
 from azure.iot.device.aio import IoTHubDeviceClient
 from azure.iot.device import MethodResponse
 from iot_method_name import IoTMethodName
-from shelves import turn_on_light, turn_off_light
-from shelves import SHELVES
+from shelves import control_light, SHELVES
 from config import config
+from logger import logger
 
 async def setup_client():
-    """Set up the Azure IoT Hub client to handle direct method calls"""
+    """
+    Sets up the client for Azure IoT Hub communication.
+
+    This function initializes the client and sets the direct method request handler.
+    """
 
     global client
     client = init_client()
     client.on_method_request_received = direct_method_handler
     
 def init_client():
-    """Initialize the Azure IoT Hub client"""
+    """
+    Initializes and returns an instance of the Azure IoT Hub device client.
 
-    
+    Returns:
+        IoTHubDeviceClient: An instance of the Azure IoT Hub device client.
+    """
+
     conn_str = f"HostName={config['azureIoTHub']['hostName']};DeviceId={config['deviceId']};SharedAccessKey={config['accessKey']}"
     client = IoTHubDeviceClient.create_from_connection_string(conn_str)
+
     return client
 
 async def direct_method_handler(method_request):
-    """Handle direct method calls from Back-End Service"""
+    """
+    Handles the incoming direct method requests from Azure IoT Hub.
+
+    Args:
+        method_request (MethodRequest): The method request object containing the details of the method call.
+    """
     
-    print(f"Received direct method: {method_request.name}")
-    print(f"Payload: {method_request.payload}")
+    logger.info(f"Received direct method: {method_request.name}")
+    logger.info(f"Payload: {method_request.payload}")
     
     if (method_request.name == IoTMethodName.TurnOnLight.name):
         shelf_index = method_request.payload['shelfPosition'] - 1
         if shelf_index < len(SHELVES):
-            print("Turning on light")
-
             shelf = SHELVES[shelf_index]
-            turn_off_light(shelf)
+            control_light(shelf, True)
             
     elif (method_request.name == IoTMethodName.TurnOffLight.name):
         shelf_index = method_request.payload['shelfPosition'] - 1
         if shelf_index < len(SHELVES):
-            print("Turning off light")
-
             shelf = SHELVES[shelf_index]
-            turn_on_light(shelf)
+            control_light(shelf, False)
 
     method_response = MethodResponse.create_from_method_request(
         method_request, 200, {}
@@ -48,6 +58,8 @@ async def direct_method_handler(method_request):
     await client.send_method_response(method_response)
 
 async def azure_iot_cleanup():
-    """Disconnect from Azure IoT Hub"""
+    """
+    Cleans up the Azure IoT connection by disconnecting the client.
+    """
 
     await client.disconnect()
