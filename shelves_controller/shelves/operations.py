@@ -16,6 +16,7 @@ def setup_shelves():
     for shelf in SHELVES:
         setup_laser_motion_sensor(shelf)
         GPIO.setup(shelf.light_pin, GPIO.OUT)
+        GPIO.output(shelf.light_pin, GPIO.LOW)
 
 def setup_laser_motion_sensor(shelf: Shelf):
     """
